@@ -1,0 +1,37 @@
+package cotato.backend.common.exception.errorCode;
+
+import org.springframework.http.HttpStatus;
+
+import lombok.Getter;
+
+@Getter
+public enum ErrorCode {
+
+	//4xx
+	UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증에 실패하였습니다."),
+
+	MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
+
+
+	//5xx
+	API_INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "API 서버에 문제가 발생하였습니다.")
+
+	;
+
+	private final HttpStatus httpStatus;
+	private final String message;
+
+	ErrorCode(HttpStatus httpStatus, String message) {
+		this.httpStatus = httpStatus;
+		this.message = message;
+	}
+
+	public HttpStatus getHttpStatus() {
+		return this.httpStatus;
+	}
+
+	public String getMessage() {
+		return this.message;
+	}
+
+}
