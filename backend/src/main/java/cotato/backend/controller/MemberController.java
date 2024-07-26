@@ -42,7 +42,7 @@ public class MemberController {
 		summary = "로그아웃",
 		description = """
 			로그아웃한다.
-						
+
 			AccessToken 필요.""",
 		responses = {
 			@ApiResponse(
@@ -61,7 +61,7 @@ public class MemberController {
 		summary = "멤버 중복 체크",
 		description = """
 			멤버가 존재하는 지 확인한다.
-						
+
 			AccessToken 필요.""",
 		responses = {
 			@ApiResponse(
