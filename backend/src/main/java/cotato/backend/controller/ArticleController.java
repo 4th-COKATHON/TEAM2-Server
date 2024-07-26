@@ -1,26 +1,22 @@
 package cotato.backend.controller;
 
 import org.springframework.data.domain.Page;
-import cotato.backend.common.dto.DataResponse;
-import cotato.backend.common.util.MemberLoader;
-import cotato.backend.domain.Member;
-import cotato.backend.dto.GetNotExpiredArticleResponseDTO;
-import cotato.backend.dto.PostArticleRequestDTO;
-import cotato.backend.dto.PostArticleResponseDTO;
-import cotato.backend.dto.SearchNameResponseDTO;
-import cotato.backend.service.ArticleService;
-import jakarta.websocket.server.PathParam;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cotato.backend.common.dto.BaseResponse;
 import cotato.backend.common.dto.DataResponse;
 import cotato.backend.common.dto.ErrorResponse;
 import cotato.backend.common.util.MemberLoader;
+import cotato.backend.domain.Member;
 import cotato.backend.dto.ArticleDTO.TimeCapsuleItem;
+import cotato.backend.dto.PostArticleRequestDTO;
+import cotato.backend.dto.PostArticleResponseDTO;
 import cotato.backend.service.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -52,7 +48,8 @@ public class ArticleController {
 			),
 		}
 	)
-	public ResponseEntity<DataResponse<PostArticleResponseDTO>> articleCreate(@RequestBody PostArticleRequestDTO postArticleRequestDTO) {
+	public ResponseEntity<DataResponse<PostArticleResponseDTO>> articleCreate(
+		@RequestBody PostArticleRequestDTO postArticleRequestDTO) {
 
 		Member member = memberLoader.getMember();
 		String loginId = memberLoader.getLoginId();
@@ -64,22 +61,22 @@ public class ArticleController {
 
 	@GetMapping("/search")
 	@Operation(
-			summary = "닉네임 검색",
-			description = """
+		summary = "닉네임 검색",
+		description = """
 			닉네임을 검색한다.
 			""",
-			responses = {
-					@ApiResponse(
-							responseCode = "200",
-							description = "성공"
-					),
-			}
+		responses = {
+			@ApiResponse(
+				responseCode = "200",
+				description = "성공"
+			),
+		}
 	)
-//	public ResponseEntity<DataResponse<SearchNameResponseDTO>> searchName(@RequestParam("searchName") String searchName) {
-//		SearchNameResponseDTO response = articleService.searchNameService(searchName);
-//
-//		return ResponseEntity.ok(DataResponse.from(response));
-//	}
+	//	public ResponseEntity<DataResponse<SearchNameResponseDTO>> searchName(@RequestParam("searchName") String searchName) {
+	//		SearchNameResponseDTO response = articleService.searchNameService(searchName);
+	//
+	//		return ResponseEntity.ok(DataResponse.from(response));
+	//	}
 	public ResponseEntity<BaseResponse> searchName(@RequestParam("searchName") String searchName) {
 		// SearchNameResponseDTO response = articleService.searchNameService(searchName);
 

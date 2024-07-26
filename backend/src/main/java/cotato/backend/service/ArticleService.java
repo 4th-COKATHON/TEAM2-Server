@@ -1,9 +1,7 @@
 package cotato.backend.service;
 
-import java.time.LocalDate;
 import cotato.backend.domain.Article;
 import cotato.backend.domain.Member;
-import cotato.backend.dto.GetNotExpiredArticleResponseDTO;
 import cotato.backend.dto.PostArticleRequestDTO;
 import cotato.backend.dto.PostArticleResponseDTO;
 import cotato.backend.repository.ArticleRepository;
@@ -19,12 +17,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cotato.backend.dto.ArticleDTO.TimeCapsuleItem;
-import cotato.backend.repository.ArticleRepository;
-import lombok.RequiredArgsConstructor;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -35,7 +30,6 @@ public class ArticleService {
     private final MemberRepository memberRepository;
 	private final int PAGE_SIZE = 3;
 
-	private final ArticleRepository articleRepository;
 
 	public Page<TimeCapsuleItem> getTimeCapsules(String loginId, boolean lock, boolean self, int page) {
 
