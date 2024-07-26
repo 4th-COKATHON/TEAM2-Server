@@ -17,9 +17,7 @@ public class Article {
     @Id
     @Column(name = "article_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ArticleId;
-
-    private String image;
+    private Long articleId;
 
     @Column(nullable = false)
     private String title;
@@ -33,7 +31,11 @@ public class Article {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    // Sender Receiver 필요
     @ManyToOne
-    private Member member;
+    @JoinColumn(name = "sender_id")
+    private Member sender;
+
+    @ManyToOne
+    @JoinColumn(name = "receiver_id")
+    private Member receiver;
 }

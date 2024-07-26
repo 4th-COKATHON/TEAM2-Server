@@ -1,9 +1,11 @@
 package cotato.backend.controller;
 
+import cotato.backend.common.dto.DataResponse;
+import cotato.backend.dto.GetNotExpiredArticleResponseDTO;
+import cotato.backend.service.ArticleService;
+import jakarta.websocket.server.PathParam;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import cotato.backend.common.dto.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/api/articles")
 public class ArticleController {
+
+	private final ArticleService articleService;
 
 	@PostMapping
 	@Operation(
@@ -32,4 +36,24 @@ public class ArticleController {
 
 		return ResponseEntity.ok(BaseResponse.ok());
 	}
+
+//	@GetMapping("")
+//	@Operation(
+//			summary = "타임캡슐 조회",
+//			description = """
+//                    타임캡슐 조회
+//                    3개의 섹션으로 나누어서 조회함""",
+//			responses = {
+//					@ApiResponse(
+//							responseCode = "200",
+//							description = "성공"
+//					),
+//			}
+//	)
+//	public ResponseEntity<DataResponse<GetNotExpiredArticleResponseDTO>> getTimeCapsule(@PathParam("filter") int filter) {
+//		// filter 값에 따라
+//		// 1 -> 기간 만료 X, 내가 나한테
+//
+//		return ResponseEntity.ok(DataResponse.from(articleService.getExpiredArticleService(filter)));
+//	}
 }
