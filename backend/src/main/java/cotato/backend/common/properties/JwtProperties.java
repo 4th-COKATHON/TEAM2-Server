@@ -17,8 +17,7 @@ public class JwtProperties {
 
 	private String ACCESS_TOKEN_SUBJECT = "AccessToken";
 	private String REFRESH_TOKEN_SUBJECT = "RefreshToken";
-	private String NAME_CLAIM = "id";
-	private String ROOM_ID_CLAIM = "roomId";
+	private String NAME_CLAIM = "loginId";
 	private String BEARER = "Bearer ";
 
 	@Getter
