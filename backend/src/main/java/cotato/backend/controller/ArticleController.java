@@ -6,6 +6,7 @@ import cotato.backend.domain.Member;
 import cotato.backend.dto.GetNotExpiredArticleResponseDTO;
 import cotato.backend.dto.PostArticleRequestDTO;
 import cotato.backend.dto.PostArticleResponseDTO;
+import cotato.backend.dto.SearchNameResponseDTO;
 import cotato.backend.service.ArticleService;
 import jakarta.websocket.server.PathParam;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +48,30 @@ public class ArticleController {
 		PostArticleResponseDTO response = articleService.postArticleService(loginId, postArticleRequestDTO);
 
 		return ResponseEntity.ok(DataResponse.from(response));
+	}
+
+	@GetMapping("/search")
+	@Operation(
+			summary = "닉네임 검색",
+			description = """
+			닉네임을 검색한다.
+			""",
+			responses = {
+					@ApiResponse(
+							responseCode = "200",
+							description = "성공"
+					),
+			}
+	)
+//	public ResponseEntity<DataResponse<SearchNameResponseDTO>> searchName(@RequestParam("searchName") String searchName) {
+//		SearchNameResponseDTO response = articleService.searchNameService(searchName);
+//
+//		return ResponseEntity.ok(DataResponse.from(response));
+//	}
+	public ResponseEntity<BaseResponse> searchName(@RequestParam("searchName") String searchName) {
+		// SearchNameResponseDTO response = articleService.searchNameService(searchName);
+
+		return ResponseEntity.ok(BaseResponse.ok());
 	}
 
 //	@GetMapping("")
