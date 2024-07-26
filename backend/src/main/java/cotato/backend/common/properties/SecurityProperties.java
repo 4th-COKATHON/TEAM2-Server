@@ -12,5 +12,4 @@ public class SecurityProperties {
 
 	private String[] permitUrls;
 	private String[] authorizationRequiredUrls;
-	private String[] adminUrls;
 }
