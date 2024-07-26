@@ -7,10 +7,12 @@ import cotato.backend.repository.ArticleRepository;
 import cotato.backend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -31,11 +33,15 @@ public class ArticleService {
 //        }
 //    }
 
+    @Transactional
     public PostArticleResponseDTO postArticleService(String loginId, PostArticleRequestDTO postArticleRequestDTO) {
         LocalDateTime now = LocalDateTime.now();
 
-        Member sender = memberRepository.findById(Long.parseLong(loginId)).orElse(null);
-        Member receiver = memberRepository.findByName(postArticleRequestDTO.receiverName());
+        Optional<Member> senderOpt = memberRepository.findByLoginId(loginId);
+        Optional<Member> receiverOpt = memberRepository.findByName(postArticleRequestDTO.receiverName());
+
+        Member sender = senderOpt.orElseThrow(() -> new IllegalArgumentException("Sender not found"));
+        Member receiver = receiverOpt.orElseThrow(() -> new IllegalArgumentException("Receiver not found"));
 
         Article article = new Article(null, postArticleRequestDTO.title(), postArticleRequestDTO.detail(), postArticleRequestDTO.expiredAt(), now, sender, receiver);
         articleRepository.save(article);
@@ -43,6 +49,7 @@ public class ArticleService {
         return new PostArticleResponseDTO(article.getArticleId());
     }
 
+    @Transactional
     public SearchNameResponseDTO searchNameService(String searchName) {
         if (searchName == null) searchName = "";
         // null인 경우 빈 문자열로 초기화하여 에러 방지함
