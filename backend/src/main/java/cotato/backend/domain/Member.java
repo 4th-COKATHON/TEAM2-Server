@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import cotato.backend.dto.MemberDTO;
+import cotato.backend.dto.MemberDTO.MemberSaveRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -23,7 +25,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class Member {
 
 	@Id
@@ -43,4 +44,11 @@ public class Member {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private Role role;
+
+	public Member(String loginId, String password, String name, Role role) {
+		this.loginId = loginId;
+		this.name = name;
+		this.password = password;
+		this.role = role;
+	}
 }
