@@ -5,7 +5,10 @@ import static cotato.backend.common.exception.errorCode.ErrorCode.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,8 +22,10 @@ import cotato.backend.domain.Article;
 import cotato.backend.domain.Member;
 import cotato.backend.dto.ArticleDTO.ArticleGetResponse;
 import cotato.backend.dto.ArticleDTO.TimeCapsuleItem;
+import cotato.backend.dto.MemberSimpleDTO;
 import cotato.backend.dto.PostArticleRequestDTO;
 import cotato.backend.dto.PostArticleResponseDTO;
+import cotato.backend.dto.SearchNameResponseDTO;
 import cotato.backend.repository.ArticleRepository;
 import cotato.backend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -60,24 +65,39 @@ public class ArticleService {
 		return articles.map(article -> new TimeCapsuleItem(
 			article.getArticleId(),
 			article.getTitle(),
-			article.getExpiredAt().toLocalDate(),
+			article.getExpiredAt(),
 			article.getTitle(),
-			calculateDDay(article.getExpiredAt().toLocalDate())
+			calculateDDay(article.getExpiredAt())
 		));
 	}
 
-	public PostArticleResponseDTO postArticleService(String loginId, PostArticleRequestDTO postArticleRequestDTO) {
-		LocalDateTime now = LocalDateTime.now();
+    @Transactional
+    public PostArticleResponseDTO postArticleService(String loginId, PostArticleRequestDTO postArticleRequestDTO) {
+        LocalDateTime now = LocalDateTime.now();
 
-		Member sender = memberRepository.findById(Long.parseLong(loginId)).orElse(null);
-		Member receiver = memberRepository.findByName(postArticleRequestDTO.receiverName());
+        Optional<Member> senderOpt = memberRepository.findByLoginId(loginId);
+        Optional<Member> receiverOpt = memberRepository.findByName(postArticleRequestDTO.receiverName());
 
-		Article article = new Article(null, postArticleRequestDTO.title(), postArticleRequestDTO.detail(),
-			postArticleRequestDTO.expiredAt(), now, sender, receiver);
-		articleRepository.save(article);
+        Member sender = senderOpt.orElseThrow(() -> new IllegalArgumentException("Sender not found"));
+        Member receiver = receiverOpt.orElseThrow(() -> new IllegalArgumentException("Receiver not found"));
 
-		return new PostArticleResponseDTO(article.getArticleId());
-	}
+        Article article = new Article(null, postArticleRequestDTO.title(), postArticleRequestDTO.detail(), postArticleRequestDTO.expiredAt(), now, sender, receiver);
+        articleRepository.save(article);
+
+        return new PostArticleResponseDTO(article.getArticleId());
+    }
+
+    @Transactional
+    public SearchNameResponseDTO searchNameService(String searchName) {
+        if (searchName == null) searchName = "";
+        // null인 경우 빈 문자열로 초기화하여 에러 방지함
+
+        List<Member> members = memberRepository.findByNameContaining(searchName);
+        List<MemberSimpleDTO> responseMembers = members.stream()
+                .map(member -> new MemberSimpleDTO(member.getId(), member.getName()))
+                .collect(Collectors.toList());
+        return new SearchNameResponseDTO(responseMembers);
+    }
 
 	private int calculateDDay(LocalDate expiredAt) {
 		// D-Day 계산 로직 구현
@@ -88,8 +108,8 @@ public class ArticleService {
 	public ArticleGetResponse getArticle(String memberLoginId, Long articleId) throws CustomException {
 		Article article = articleRepository.findById(articleId)
 			.orElseThrow(() -> new CustomException(ErrorCode.ARTICLE_NOT_FOUND));
-		LocalDateTime expiredAt = article.getExpiredAt();
-		LocalDateTime now = LocalDateTime.now();
+		LocalDate expiredAt = article.getExpiredAt();
+		LocalDate now = LocalDate.now();
 
 		// 글의 receiver가 본인이 아니라면 에러 반환
 		if (!Objects.equals(article.getReceiver().getLoginId(), memberLoginId)) {
@@ -97,7 +117,7 @@ public class ArticleService {
 		}
 
 		// 예정시간이 안 지났으면 에러 반환
-		if (!isAfter(now, expiredAt)) {
+		if (isBefore(now, expiredAt)) {
 			throw new CustomException(ARTICLE_NOT_ACCEPTABLE);
 		}
 
@@ -111,8 +131,8 @@ public class ArticleService {
 		return new ArticleGetResponse(senderName, senderId, receiverName, title, detail, createdAt);
 	}
 
-	private boolean isAfter(LocalDateTime a, LocalDateTime b) {
+	private boolean isBefore(LocalDate a, LocalDate b) {
 
-		return a.isAfter(b);
+		return a.isBefore(b);
 	}
 }

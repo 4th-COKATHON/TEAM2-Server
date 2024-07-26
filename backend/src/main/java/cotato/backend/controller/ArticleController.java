@@ -15,9 +15,9 @@ import cotato.backend.common.util.MemberLoader;
 import cotato.backend.domain.Member;
 import cotato.backend.dto.ArticleDTO.ArticleGetResponse;
 import cotato.backend.dto.ArticleDTO.TimeCapsuleItem;
-import cotato.backend.dto.MemberDTO.MemberSearchResponse;
 import cotato.backend.dto.PostArticleRequestDTO;
 import cotato.backend.dto.PostArticleResponseDTO;
+import cotato.backend.dto.SearchNameResponseDTO;
 import cotato.backend.service.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -75,12 +75,11 @@ public class ArticleController {
 			),
 		}
 	)
-	public ResponseEntity<DataResponse<MemberSearchResponse>> searchName(
+	public ResponseEntity<DataResponse<SearchNameResponseDTO>> searchName(
 		@RequestParam("searchName") String searchName) {
-		// SearchNameResponseDTO response = articleService.searchNameService(searchName);
-		MemberSearchResponse memberSearchResponse = new MemberSearchResponse(1L, "d");
+		SearchNameResponseDTO response = articleService.searchNameService(searchName);
 
-		return ResponseEntity.ok(DataResponse.from(memberSearchResponse));
+		return ResponseEntity.ok(DataResponse.from(response));
 	}
 
 	@GetMapping

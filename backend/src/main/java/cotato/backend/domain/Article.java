@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Getter
@@ -26,7 +26,7 @@ public class Article {
     private String detail;
 
     @Column(nullable = false)
-    private LocalDateTime expiredAt;
+    private LocalDate expiredAt;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
