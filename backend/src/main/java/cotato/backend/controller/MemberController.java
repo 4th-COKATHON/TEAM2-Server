@@ -1,15 +1,13 @@
 package cotato.backend.controller;
 
-import static cotato.backend.common.dto.BaseResponse.*;
-
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cotato.backend.common.dto.BaseResponse;
 import cotato.backend.common.dto.DataResponse;
-import cotato.backend.dto.MemberDTO;
 import cotato.backend.dto.MemberDTO.MemberExistenceCheckResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,6 +18,24 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/api/members")
 public class MemberController {
+
+	@PostMapping("/join")
+	@Operation(
+		summary = "회원가입",
+		description = """
+			회원가입한다.
+			""",
+		responses = {
+			@ApiResponse(
+				responseCode = "200",
+				description = "성공"
+			),
+		}
+	)
+	public ResponseEntity<BaseResponse> memberJoin() {
+
+		return ResponseEntity.ok(BaseResponse.ok());
+	}
 
 	@PostMapping("/logout")
 	@Operation(
@@ -40,7 +56,7 @@ public class MemberController {
 		return ResponseEntity.ok(BaseResponse.ok());
 	}
 
-	@PostMapping("/duplication")
+	@GetMapping("/duplication")
 	@Operation(
 		summary = "멤버 중복 체크",
 		description = """
