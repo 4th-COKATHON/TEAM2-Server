@@ -1,7 +1,5 @@
 package cotato.backend.controller;
 
-import java.time.LocalDate;
-
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -140,9 +138,11 @@ public class ArticleController {
 		}
 	)
 	public ResponseEntity<DataResponse<ArticleGetResponse>> articleGet(@PathParam("articleId") Long articleId) {
+		String loginId = memberLoader.getLoginId();
 
-		ArticleGetResponse articleGetResponse = new ArticleGetResponse("", "", "", "", "", LocalDate.now());
+		ArticleGetResponse response = articleService.getArticle(loginId, articleId);
 
-		return ResponseEntity.ok(DataResponse.from(articleGetResponse));
+		return ResponseEntity.ok(DataResponse.from(response));
 	}
+
 }

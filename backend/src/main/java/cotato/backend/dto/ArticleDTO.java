@@ -33,7 +33,7 @@ public class ArticleDTO {
 	@AllArgsConstructor
 	public static class ArticleGetResponse {
 		private String senderName;
-		private String senderId;
+		private Long senderId;
 		private String receiverName;
 
 		private String title;
@@ -41,5 +41,6 @@ public class ArticleDTO {
 
 		@JsonFormat(pattern = "yyyy-MM-dd")
 		private LocalDate date;
+
 	}
 }

@@ -1,8 +1,11 @@
 package cotato.backend.service;
 
+import static cotato.backend.common.exception.errorCode.ErrorCode.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.util.Objects;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,8 +13,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import cotato.backend.common.exception.CustomException;
+import cotato.backend.common.exception.errorCode.ErrorCode;
 import cotato.backend.domain.Article;
 import cotato.backend.domain.Member;
+import cotato.backend.dto.ArticleDTO.ArticleGetResponse;
 import cotato.backend.dto.ArticleDTO.TimeCapsuleItem;
 import cotato.backend.dto.PostArticleRequestDTO;
 import cotato.backend.dto.PostArticleResponseDTO;
@@ -77,5 +83,36 @@ public class ArticleService {
 		// D-Day 계산 로직 구현
 		LocalDate now = LocalDate.now();
 		return Period.between(now, expiredAt).getDays();
+	}
+
+	public ArticleGetResponse getArticle(String memberLoginId, Long articleId) throws CustomException {
+		Article article = articleRepository.findById(articleId)
+			.orElseThrow(() -> new CustomException(ErrorCode.ARTICLE_NOT_FOUND));
+		LocalDateTime expiredAt = article.getExpiredAt();
+		LocalDateTime now = LocalDateTime.now();
+
+		// 글의 receiver가 본인이 아니라면 에러 반환
+		if (!Objects.equals(article.getReceiver().getLoginId(), memberLoginId)) {
+			throw new CustomException(FORBIDDEN);
+		}
+
+		// 예정시간이 안 지났으면 에러 반환
+		if (!isAfter(now, expiredAt)) {
+			throw new CustomException(ARTICLE_NOT_ACCEPTABLE);
+		}
+
+		String senderName = article.getSender().getName();
+		Long senderId = article.getSender().getId();
+		String receiverName = article.getReceiver().getName();
+		String title = article.getTitle();
+		String detail = article.getDetail();
+		LocalDate createdAt = article.getCreatedAt().toLocalDate();
+
+		return new ArticleGetResponse(senderName, senderId, receiverName, title, detail, createdAt);
+	}
+
+	private boolean isAfter(LocalDateTime a, LocalDateTime b) {
+
+		return a.isAfter(b);
 	}
 }
