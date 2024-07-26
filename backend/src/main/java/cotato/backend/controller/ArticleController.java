@@ -1,7 +1,11 @@
 package cotato.backend.controller;
 
 import cotato.backend.common.dto.DataResponse;
+import cotato.backend.common.util.MemberLoader;
+import cotato.backend.domain.Member;
 import cotato.backend.dto.GetNotExpiredArticleResponseDTO;
+import cotato.backend.dto.PostArticleRequestDTO;
+import cotato.backend.dto.PostArticleResponseDTO;
 import cotato.backend.service.ArticleService;
 import jakarta.websocket.server.PathParam;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +23,9 @@ public class ArticleController {
 
 	private final ArticleService articleService;
 
+	private final MemberLoader memberLoader;
+
+
 	@PostMapping
 	@Operation(
 		summary = "글 저장",
@@ -32,9 +39,14 @@ public class ArticleController {
 			),
 		}
 	)
-	public ResponseEntity<BaseResponse> articleCreate() {
+	public ResponseEntity<DataResponse<PostArticleResponseDTO>> articleCreate(@RequestBody PostArticleRequestDTO postArticleRequestDTO) {
 
-		return ResponseEntity.ok(BaseResponse.ok());
+		Member member = memberLoader.getMember();
+		String loginId = memberLoader.getLoginId();
+
+		PostArticleResponseDTO response = articleService.postArticleService(loginId, postArticleRequestDTO);
+
+		return ResponseEntity.ok(DataResponse.from(response));
 	}
 
 //	@GetMapping("")
