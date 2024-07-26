@@ -28,10 +28,10 @@ public class Article {
     private String detail;
 
     @Column(nullable = false)
-    private Date expireDate;
+    private LocalDateTime expiredAt;
 
     @Column(nullable = false)
-    private LocalDateTime createDate;
+    private LocalDateTime createdAt;
 
     // Sender Receiver 필요
     @ManyToOne
