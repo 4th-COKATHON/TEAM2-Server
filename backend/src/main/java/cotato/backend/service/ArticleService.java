@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,7 @@ import cotato.backend.repository.ArticleRepository;
 import cotato.backend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 
+@Slf4j
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
@@ -42,7 +44,7 @@ public class ArticleService {
 	public Page<TimeCapsuleItem> getTimeCapsules(String loginId, boolean lock, boolean self, int page) {
 
 		Pageable pageable = PageRequest.of(page, PAGE_SIZE);
-		LocalDateTime now = LocalDateTime.now();
+		LocalDate now = LocalDate.now();
 
 		//1. 아직 잠겨 있으면서, 내가 쓴 글
 		//2. 아직 잠겨 있으면서, 남들이 써준 글
@@ -75,11 +77,10 @@ public class ArticleService {
     public PostArticleResponseDTO postArticleService(String loginId, PostArticleRequestDTO postArticleRequestDTO) {
         LocalDateTime now = LocalDateTime.now();
 
-        Optional<Member> senderOpt = memberRepository.findByLoginId(loginId);
-        Optional<Member> receiverOpt = memberRepository.findByName(postArticleRequestDTO.receiverName());
-
-        Member sender = senderOpt.orElseThrow(() -> new IllegalArgumentException("Sender not found"));
-        Member receiver = receiverOpt.orElseThrow(() -> new IllegalArgumentException("Receiver not found"));
+        Member sender = memberRepository.findByLoginId(loginId)
+				.orElseThrow(() -> new CustomException(ErrorCode.SENDER_NOT_FOUND));
+        Member receiver = memberRepository.findByName(postArticleRequestDTO.receiverName())
+				.orElseThrow(() -> new CustomException(ErrorCode.RECEIVER_NOT_FOUND));
 
         Article article = new Article(null, postArticleRequestDTO.title(), postArticleRequestDTO.detail(), postArticleRequestDTO.expiredAt(), now, sender, receiver);
         articleRepository.save(article);
