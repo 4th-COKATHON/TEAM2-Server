@@ -22,6 +22,8 @@ public class ArticleDTO {
 	public static class TimeCapsuleItem {
 		private Long articleId;
 		private String name;
+
+		@JsonFormat(pattern = "yyyy-MM-dd")
 		private LocalDate date;
 		private String title;
 		private int dDay;

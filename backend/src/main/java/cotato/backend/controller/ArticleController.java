@@ -1,5 +1,7 @@
 package cotato.backend.controller;
 
+import java.time.LocalDate;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,12 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import cotato.backend.common.dto.BaseResponse;
 import cotato.backend.common.dto.DataResponse;
 import cotato.backend.common.dto.ErrorResponse;
 import cotato.backend.common.util.MemberLoader;
 import cotato.backend.domain.Member;
+import cotato.backend.dto.ArticleDTO.ArticleGetResponse;
 import cotato.backend.dto.ArticleDTO.TimeCapsuleItem;
+import cotato.backend.dto.MemberDTO.MemberSearchResponse;
 import cotato.backend.dto.PostArticleRequestDTO;
 import cotato.backend.dto.PostArticleResponseDTO;
 import cotato.backend.service.ArticleService;
@@ -64,6 +67,8 @@ public class ArticleController {
 		summary = "닉네임 검색",
 		description = """
 			닉네임을 검색한다.
+						
+			accessToken 필요.
 			""",
 		responses = {
 			@ApiResponse(
@@ -72,15 +77,12 @@ public class ArticleController {
 			),
 		}
 	)
-	//	public ResponseEntity<DataResponse<SearchNameResponseDTO>> searchName(@RequestParam("searchName") String searchName) {
-	//		SearchNameResponseDTO response = articleService.searchNameService(searchName);
-	//
-	//		return ResponseEntity.ok(DataResponse.from(response));
-	//	}
-	public ResponseEntity<BaseResponse> searchName(@RequestParam("searchName") String searchName) {
+	public ResponseEntity<DataResponse<MemberSearchResponse>> searchName(
+		@RequestParam("searchName") String searchName) {
 		// SearchNameResponseDTO response = articleService.searchNameService(searchName);
+		MemberSearchResponse memberSearchResponse = new MemberSearchResponse(1L, "d");
 
-		return ResponseEntity.ok(BaseResponse.ok());
+		return ResponseEntity.ok(DataResponse.from(memberSearchResponse));
 	}
 
 	@GetMapping
@@ -137,8 +139,10 @@ public class ArticleController {
 			),
 		}
 	)
-	public ResponseEntity<BaseResponse> articleGet(@PathParam("articleId") Long articleId) {
+	public ResponseEntity<DataResponse<ArticleGetResponse>> articleGet(@PathParam("articleId") Long articleId) {
 
-		return ResponseEntity.ok(BaseResponse.ok());
+		ArticleGetResponse articleGetResponse = new ArticleGetResponse("", "", "", "", "", LocalDate.now());
+
+		return ResponseEntity.ok(DataResponse.from(articleGetResponse));
 	}
 }

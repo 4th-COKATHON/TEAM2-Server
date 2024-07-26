@@ -28,4 +28,11 @@ public class MemberDTO {
 
 		private String loginId;
 	}
+
+	@Getter
+	@AllArgsConstructor
+	public static class MemberSearchResponse {
+		private Long memberId;
+		private String name;
+	}
 }
