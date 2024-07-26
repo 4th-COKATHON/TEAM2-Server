@@ -2,6 +2,10 @@ package cotato.backend.common.security.login.service;
 
 import static cotato.backend.common.exception.errorCode.ErrorCode.*;
 
+import java.util.ArrayList;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -11,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import cotato.backend.common.exception.CustomException;
 import cotato.backend.common.exception.errorCode.ErrorCode;
+import cotato.backend.common.security.dto.CustomUserDetailsImpl;
 import cotato.backend.domain.Member;
 import cotato.backend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +32,7 @@ public class LoginService implements UserDetailsService {
 
 		Member member = memberRepository.findByLoginId(username).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-		return User.builder()
-			.username(member.getLoginId())
-			.password(member.getPassword())
-			.roles(member.getRole().getValue())
-			.build();
+		return CustomUserDetailsImpl.from(member);
 	}
 
 }

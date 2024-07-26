@@ -32,6 +32,7 @@ import cotato.backend.common.security.jwt.provider.JwtTokenProvider;
 import cotato.backend.common.security.login.filter.JsonNamePasswordAuthenticationFilter;
 import cotato.backend.common.security.login.handler.LoginFailureHandler;
 import cotato.backend.common.security.login.handler.LoginSuccessHandler;
+import cotato.backend.common.security.login.provider.CustomAuthenticationProvider;
 import cotato.backend.common.security.login.service.LoginService;
 import cotato.backend.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,7 @@ public class WebSecurityConfig {
 	private final AntPathMatcher pathMatcher = new AntPathMatcher();
 	private final PasswordEncoderConfig passwordEncoderConfig;
 	private final LoginService loginService;
+	private final CustomAuthenticationProvider authenticationProvider;
 
 
 	@Bean
@@ -96,12 +98,7 @@ public class WebSecurityConfig {
 	//authentication Provider 관리를 위한 Manager 등록
 	@Bean
 	public AuthenticationManager authenticationManager() throws Exception {
-		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-
-		provider.setUserDetailsService(loginService);
-		provider.setPasswordEncoder(passwordEncoderConfig.passwordEncoder());
-
-		return new ProviderManager(provider);
+		return new ProviderManager(authenticationProvider);
 	}
 
 	//로그인 필터 등록
