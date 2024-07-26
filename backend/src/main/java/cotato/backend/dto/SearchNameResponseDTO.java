@@ -1,4 +1,6 @@
 package cotato.backend.dto;
 
-public record SearchNameResponseDTO(String name) {
+import java.util.List;
+
+public record SearchNameResponseDTO(List<MemberSimpleDTO> members) {
 }

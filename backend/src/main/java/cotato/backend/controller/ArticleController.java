@@ -63,15 +63,10 @@ public class ArticleController {
 					),
 			}
 	)
-//	public ResponseEntity<DataResponse<SearchNameResponseDTO>> searchName(@RequestParam("searchName") String searchName) {
-//		SearchNameResponseDTO response = articleService.searchNameService(searchName);
-//
-//		return ResponseEntity.ok(DataResponse.from(response));
-//	}
-	public ResponseEntity<BaseResponse> searchName(@RequestParam("searchName") String searchName) {
-		// SearchNameResponseDTO response = articleService.searchNameService(searchName);
+	public ResponseEntity<DataResponse<SearchNameResponseDTO>> searchName(@RequestParam("searchName") String searchName) {
+		SearchNameResponseDTO response = articleService.searchNameService(searchName);
 
-		return ResponseEntity.ok(BaseResponse.ok());
+		return ResponseEntity.ok(DataResponse.from(response));
 	}
 
 //	@GetMapping("")
